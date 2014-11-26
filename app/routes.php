@@ -11,7 +11,14 @@
 |
 */
 
-Route::get('/', function()
+//Page d'accueil  (liste des images )
+Route::get('/', array('as' => 'home','uses' => 'ImagesController@listImg'));
+
+//Page d'une image 
+Route::get('/image/{imageName}', array('as' => 'showImg','uses' => 'ImagesController@showImg'));
+
+// Page 404
+App::missing(function($exception)
 {
-	return View::make('hello');
+    return Response::view('errors.404', array(), 404);
 });
