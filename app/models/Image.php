@@ -10,6 +10,17 @@ class Image extends BaseModel {
 	}
 
 	/**
+	 * Génére le fichier XMP d'une image
+	 */
+	public static function generateXMP($imageName)
+	{
+
+		$xmp = shell_exec("exiftool -xmp -b ".self::$pathFolderImg.$imageName);
+
+		return $xmp;
+	}
+
+	/**
 	 * Génére le JSON des données de toutes les images se trouvant dans le dossier public/assets/images
 	 */
 	public static function exploreFolder()

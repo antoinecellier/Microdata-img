@@ -17,6 +17,16 @@ Route::get('/', array('as' => 'home','uses' => 'ImagesController@listImg'));
 //Page d'une image 
 Route::get('/image/{imageName}', array('as' => 'showImg','uses' => 'ImagesController@showImg'));
 
+//Page d'une image 
+Route::get('/image/add', array('as' => 'addImg','uses' => 'ImagesController@addImg'));
+
+
+//Télécharger une image 
+Route::get('/image/download/{imageURL}', array('as' => 'downloadIMG','uses' => 'ImagesController@downloadImg'));
+
+//Télécharger fichier XMP correspondant à une image 
+Route::get('/image/downloadXMP/{imageURL}', array('as' => 'downloadXMP','uses' => 'ImagesController@downloadXMP'));
+
 // Page 404
 App::missing(function($exception)
 {

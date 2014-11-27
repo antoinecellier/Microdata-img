@@ -3,6 +3,13 @@
 @section('content')
 	<div class="row">
 		<div class="col-md-12 img-block">
+
+			<a href="{{ URL::route('downloadIMG', $image['FileName']) }}">
+				<button type="button" class="btn btn-primary">Télécharger l'image</button>
+			</a>
+			<a href="{{ URL::route('downloadXMP', $image['FileName']) }}">
+				<button type="button" class="btn btn-primary">Télécharger XMP</button>
+			</a>
 			<table class="table">
 				<thead>
 					<tr>
