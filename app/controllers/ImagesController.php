@@ -18,7 +18,8 @@ class ImagesController extends Controller {
 	{
 		$metaData = Image::exploreFile($imageName);
 		$d = get_object_vars($metaData);
-		return View::make('show',array('image' => $d));
+		$flickr = Image::relationFlickr($d['Subject']);
+		return View::make('show',array('image' => $d,'flickr' => $flickr[0],'tags' => $flickr[1]));
 	}
 
 	/**
@@ -26,7 +27,35 @@ class ImagesController extends Controller {
 	 */
 	public function addImg()
 	{
+		 if (Input::hasFile('image')) {
+	        $file            = Input::file('image');
+	        $destinationPath = public_path()."/assets/images/";
+	        $filename        = $file->getClientOriginalName();
+	        $uploadSuccess   = $file->move($destinationPath, $filename);
+	        if($uploadSuccess)
+	        	if(Image::createJsonFile($filename))
+	        		return Redirect::route('editImg',array($filename));
+
+	        return View::make('add');
+    	}
 		return View::make('add');
+	}
+
+	/**
+	 * Editer une image
+	 */
+	public function editImg($imageName)
+	{
+		if(Input::all()){
+			$inputs = Input::all();
+			Image::mergeData($imageName, $inputs);
+			return Redirect::route('showImg',array($imageName));
+		}
+
+		$metaData = Image::exploreFile($imageName);
+		$d = get_object_vars($metaData);
+		$data_array = array("Title", "Creator", "CreatorWorkURL", "Description", "Headline", "Country", "State", "City", "Credit", "Source", "DateCreated", "Rights", "UsageTerms");
+		return View::make('edit',array('imageName' => $imageName, 'image' => $d, 'data_modif' => $data_array));
 	}
 
 	/**
@@ -54,18 +83,18 @@ class ImagesController extends Controller {
 	}
 
 	/**
-	* Edite une image
+	* All metadata JSON format
+	**/
+	public function allDataJson(){
+		$data = Image::exploreFolderJSON();
+
+		return Response::json($data);
+	}
+	/**
+	* Liste des images géoréférencé
 	*/
-	public function editImg($id)
-	{
-		return View::make('index');
+	public function cartoImg(){
+		return View::make('cartographie');
 	}
 
-	/**
-	 * Ajoute une image
-	 */
-	public function addImg()
-	{
-		return View::make('index');		
-	}
 }

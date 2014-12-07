@@ -1,5 +1,6 @@
 <html>
 	<head>
+  {{ HTML::style('//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css') }}
 		{{ HTML::style('//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css') }}
 		{{ HTML::style('assets/style.css') }}
 		<meta charset="utf-8">
@@ -19,8 +20,8 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active">{{ HTML::link(route('home'),'Accueil') }}</li>
-            <li><a href="#about">Ajouter une image</a></li>
-            <li><a href="#contact">Documentation</a></li>
+            <li>{{ HTML::link(route('carto'),'Cartographie') }}</li>
+            <li>{{ HTML::link(route('addImg'),'Ajouter une image') }}</li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -34,11 +35,6 @@
 		
 
 
-
-	{{ HTML::script('https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js') }}
-	{{ HTML::script('https://maps.googleapis.com/maps/api/js?v=3&sensor=false&amp;libraries=places&key=AIzaSyBtuAPA7ma1G3E0xPdc4-lJsOF7IlveREU')}}
-	{{ HTML::script('https://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0.2/src/markerclusterer.js')}}
-	{{ HTML::script('assets/js/georeferencementMain.js') }}
 
 	</body>
 </html>
