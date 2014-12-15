@@ -28,7 +28,7 @@ class Image extends BaseModel {
 	{
 		$jsonFile = explode(".", $imageName);
 		shell_exec("echo ".$datas." > ".self::$pathFolderJson.$jsonFile[0].".json");
-		shell_exec("exiftool ".self::$pathFolderImg.$imageName." -json=".self::$pathFolderJson.$jsonFile[0].".json");
+		shell_exec("exiftool ".self::$pathFolderImg.$imageName." -json=".self::$pathFolderJson.$jsonFile[0].".json --overwrite_original");
 	}
 
 	/**
@@ -46,6 +46,7 @@ class Image extends BaseModel {
 			}
 		}
 		$datas = json_encode($datas);
+
 		self::modifDataJson($imageName, $datas);
 	}
 
@@ -67,7 +68,6 @@ class Image extends BaseModel {
 	*/
 	public static function exploreFolderJSON()
 	{
-
 		$json = shell_exec("exiftool -json ".self::$pathFolderImg."*.*");
 		$json = json_decode($json);
 		return $json;
@@ -78,12 +78,20 @@ class Image extends BaseModel {
 	 */
 	public static function exploreFile($imageName)
 	{
-		$search = '_';
-		$replace = '.';
+		$jsonFile = explode(".", $imageName);
+		$jsonFile = $jsonFile[0].".json";
+		if(file_exists(self::$pathFolderJson.$jsonFile)){
+			$json = file_get_contents(self::$pathFolderJson.$jsonFile);
+			$datas = json_decode($json);
+			if(is_array($datas))
+				$datas = $datas[0];
+		}else {
+			$json = shell_exec("exiftool -json ".self::$pathFolderImg.$imageName);
+			$datas = json_decode($json);
+			$datas = $datas[0];			
+		}
 
-		$json = shell_exec("exiftool -json ".self::$pathFolderImg.$imageName);
-		$datas = json_decode($json);
-		return $datas[0];
+		return $datas;	
 	}
 
 	/**
@@ -101,16 +109,13 @@ class Image extends BaseModel {
 	public static function clearForList($datas)
 	{
 		$arrayImageClear = array();
+		$select_Data = array('Title','Creator','Description','SourceFile','FileName');
 		foreach ($datas as $key => $value) {
 			$arrayOneImage = array();
 			foreach ($value as $k => $v) {
-				if($k == 'SourceFile')
+				if(in_array($k, $select_Data))
 				{
 					$arrayOneImage[$k] = $v;
-				}else{
-					if($k == 'FileName'){
-						$arrayOneImage['FileName'] = $v;
-					}
 				}
 			}
 			array_push($arrayImageClear, $arrayOneImage);
